@@ -67,7 +67,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/users/favourites"
+        path="/favourites"
         element={
           <ProtectedRoute>
             <Favourites />

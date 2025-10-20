@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '../api/apiClient';
-import {
-  Users,
-  Calendar,
-  Briefcase,
-  Activity,
-  Loader2,
-  PieChart as PieIcon,
-} from 'lucide-react';
+import { Users, Calendar, Briefcase, Activity, Loader2 } from 'lucide-react';
 import {
   PieChart,
   Pie,
@@ -165,13 +158,16 @@ export default function Dashboard() {
               <div className="card-body">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm text-gray-500">Engagement Index</p>
+                    <p className="text-sm text-gray-500">
+                      Engagement Index (Female)
+                    </p>
                     <h2 className="text-2xl font-bold text-green-600">
-                      {Math.floor((stats.maleUsers / stats.totalUsers) * 100)}%
+                      {Math.floor((stats.femaleUsers / stats.totalUsers) * 100)}
+                      %
                     </h2>
                     <progress
                       className="progress progress-success w-40 mt-2"
-                      value={(stats.maleUsers / stats.totalUsers) * 100}
+                      value={(stats.femaleUsers / stats.totalUsers) * 100}
                       max="100"></progress>
                   </div>
                   <Activity className="w-8 h-8 text-green-500" />

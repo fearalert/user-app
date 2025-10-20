@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
     icon: <User size={18} />,
     subNav: [
       { name: 'All Users', path: '/users' },
-      { name: 'Favourites', path: '/users/favourites' },
+      { name: 'Favourites', path: '/favourites' },
     ],
   },
   { name: 'Settings', path: '/settings', icon: <Settings size={18} /> },

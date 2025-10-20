@@ -2,10 +2,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { User } from '../types';
 import { api } from '../api/apiClient';
-import { Search, Filter, Download, Upload, Plus } from 'lucide-react';
+import { Search, Filter, ArrowUpDown } from 'lucide-react';
 import Pagination from '../components/Pagination';
 import UserTable from '../components/UserTable';
 import { useUI } from '../hooks/useUI';
+
+type SortField = 'firstName' | 'age' | 'email';
+type SortOrder = 'asc' | 'desc';
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,8 +22,10 @@ export default function Users() {
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [ageFilter, setAgeFilter] = useState<string>('all');
 
-  const { itemsPerPage } = useUI();
+  const [sortField, setSortField] = useState<SortField>('firstName');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
+  const { itemsPerPage } = useUI();
   const limit = itemsPerPage;
 
   useEffect(() => {
@@ -61,12 +66,35 @@ export default function Users() {
         });
       }
 
+      filteredUsers.sort((a: User, b: User) => {
+        let comparison = 0;
+
+        if (sortField === 'firstName') {
+          comparison = a.firstName.localeCompare(b.firstName);
+        } else if (sortField === 'age') {
+          comparison = a.age - b.age;
+        } else if (sortField === 'email') {
+          comparison = a.email.localeCompare(b.email);
+        }
+
+        return sortOrder === 'asc' ? comparison : -comparison;
+      });
+
       setUsers(filteredUsers);
       setTotal(res.data.total);
     } catch (error) {
       console.error('Failed to fetch users', error);
     }
-  }, [page, debouncedSearch, limit, genderFilter, roleFilter, ageFilter]);
+  }, [
+    page,
+    debouncedSearch,
+    limit,
+    genderFilter,
+    roleFilter,
+    ageFilter,
+    sortField,
+    sortOrder,
+  ]);
 
   useEffect(() => {
     fetchUsers();
@@ -77,33 +105,32 @@ export default function Users() {
     setRoleFilter('all');
     setAgeFilter('all');
     setSearch('');
+    setSortField('firstName');
+    setSortOrder('asc');
   };
 
   const activeFiltersCount = [genderFilter, roleFilter, ageFilter].filter(
     (f) => f !== 'all'
   ).length;
 
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-base-content">Users List</h1>
-        <div className="flex gap-2">
-          <button className="btn btn-outline btn-sm gap-2">
-            <Upload className="w-4 h-4" />
-            Import
-          </button>
-          <button className="btn btn-outline btn-sm gap-2">
-            <Download className="w-4 h-4" />
-            Export
-          </button>
-          <button className="btn btn-primary btn-sm gap-2">
-            <Plus className="w-4 h-4" />
-            Add User
-          </button>
-        </div>
+        <h1 className="text-2xl font-bold text-base-content mb-2">
+          Users List
+        </h1>
       </div>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center flex-wrap">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 w-4 h-4" />
           <input
@@ -116,6 +143,43 @@ export default function Users() {
             }}
             className="input input-bordered w-full pl-10"
           />
+        </div>
+
+        <div className="dropdown dropdown-end">
+          <label
+            tabIndex={0}
+            className="btn btn-outline gap-2">
+            <ArrowUpDown className="w-4 h-4" />
+            Sort: {sortField} ({sortOrder})
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-300">
+            <li className="menu-title">
+              <span>Sort by</span>
+            </li>
+            <li>
+              <a
+                onClick={() => toggleSort('firstName')}
+                className={sortField === 'firstName' ? 'active' : ''}>
+                Name {sortField === 'firstName' && `(${sortOrder})`}
+              </a>
+            </li>
+            <li>
+              <a
+                onClick={() => toggleSort('age')}
+                className={sortField === 'age' ? 'active' : ''}>
+                Age {sortField === 'age' && `(${sortOrder})`}
+              </a>
+            </li>
+            <li>
+              <a
+                onClick={() => toggleSort('email')}
+                className={sortField === 'email' ? 'active' : ''}>
+                Email {sortField === 'email' && `(${sortOrder})`}
+              </a>
+            </li>
+          </ul>
         </div>
 
         <button
@@ -187,8 +251,12 @@ export default function Users() {
                 <button
                   onClick={clearFilters}
                   className="btn btn-ghost btn-sm"
-                  disabled={activeFiltersCount === 0}>
-                  Clear Filters
+                  disabled={
+                    activeFiltersCount === 0 &&
+                    sortField === 'firstName' &&
+                    sortOrder === 'asc'
+                  }>
+                  Clear All
                 </button>
               </div>
             </div>

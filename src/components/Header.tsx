@@ -20,14 +20,14 @@ const Header = () => {
       </div>
 
       <div className="flex-none gap-2">
-        {/* <select
+        <select
           className="select select-bordered w-auto"
           value={itemsPerPage}
           onChange={(e) => setItemsPerPage(Number(e.target.value))}>
           <option value={5}>5</option>
           <option value={10}>10</option>
           <option value={20}>20</option>
-        </select> */}
+        </select>
 
         <button
           className="btn btn-ghost"
