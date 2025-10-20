@@ -1,15 +1,18 @@
 /** @format */
 
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRoutes from './routes/AppRoutes';
+import { UIProvider } from './contexts/UIContext';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <UIProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </UIProvider>
     </AuthProvider>
   );
 }

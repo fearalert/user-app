@@ -15,9 +15,10 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [auth, setAuth] = useState<AuthData | null>(() => {
-    const saved = read('auth');
-    return saved ? JSON.parse(saved) : null;
+    const saved = read<AuthData | null>('auth', null);
+    return saved ? saved : null;
   });
+
   const [loading, setLoading] = useState(false);
 
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

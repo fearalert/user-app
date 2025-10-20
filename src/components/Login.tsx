@@ -1,19 +1,16 @@
 /** @format */
 
-import { useState, useContext, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import { Cross, Eye, EyeOffIcon, Lock, User2Icon } from 'lucide-react';
+import { X, Eye, EyeOff, Lock, User2, Sun, Moon } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { useUI } from '../hooks/useUI';
 
 export default function Login() {
   const navigate = useNavigate();
-  const authContext = useContext(AuthContext);
 
-  if (!authContext) {
-    throw new Error('AuthContext not found.');
-  }
-
-  const { login, loading } = authContext;
+  const { login, loading } = useAuth();
+  const { theme } = useUI();
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -33,11 +30,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200 px-4">
+    <div
+      data-theme={theme}
+      className="min-h-screen flex items-center justify-center bg-base-200 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4 shadow-lg">
-            <Lock className="w-8 h-8 text-white" />
+            <Lock className="w-8 h-8 text-primary-content" />
           </div>
           <h1 className="text-3xl font-bold text-base-content">Welcome Back</h1>
           <p className="text-base-content/60 mt-2">
@@ -49,7 +48,7 @@ export default function Login() {
           <div className="card-body p-8">
             {error && (
               <div className="alert alert-error mb-6">
-                <Cross className="inline-block w-5 h-5 mr-2" />
+                <X className="w-5 h-5" />
                 <span>{error}</span>
               </div>
             )}
@@ -71,8 +70,8 @@ export default function Login() {
                     autoComplete="username"
                     required
                   />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <User2Icon />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-base-content/40">
+                    <User2 className="w-5 h-5" />
                   </div>
                 </div>
               </div>
@@ -94,8 +93,12 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 hover:text-primary transition-colors">
-                    {showPassword ? <Eye /> : <EyeOffIcon />}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/60 hover:text-primary transition-colors">
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>

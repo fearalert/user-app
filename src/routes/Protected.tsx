@@ -1,21 +1,17 @@
 /** @format */
-import { ReactNode, useContext } from 'react';
+import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import Layout from '../components/Layout';
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const authContext = useContext(AuthContext);
   const location = useLocation();
 
-  if (!authContext) {
-    throw new Error('AuthContext is missing.');
-  }
-
-  const { auth } = authContext;
+  const { auth } = useAuth();
 
   if (!auth) {
     return (
@@ -27,7 +23,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Layout>{children}</Layout>
+    </>
+  );
 };
 
 export default ProtectedRoute;
