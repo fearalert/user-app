@@ -86,7 +86,7 @@ export default function Settings() {
             <button
               onClick={resetPreferences}
               className="btn btn-error btn-outline btn-wide mt-2 hover:scale-105 transition-transform">
-              Clear All Favourites & Reset Preferences
+              Reset Preferences
             </button>
           )}
         </div>
